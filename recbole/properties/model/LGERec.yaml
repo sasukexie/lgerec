@@ -1,0 +1,12 @@
+embedding_size: 64              # (int) The embedding size of users and items.
+n_layers: 2                     # (int) The number of layers in GCN.
+reg_weight: 1e-05               # (float) The L2 regularization weight.
+
+llm_embed_weight: 1.0
+require_pow: True
+contrastive_weight: 0.01
+neg_topk: 5
+cl_temperature: 1.0
+num_heads: 4 # 4,8
+dropout: 0.2
+is_all_embed: True # ml True, yelp False

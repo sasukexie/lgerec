@@ -1,0 +1,82 @@
+#* general
+gpu_id: '0'
+use_gpu: True
+seed: 2021
+state: INFO
+reproducibility: True
+checkpoint_dir: 'saved/dataset'
+show_progress: True
+save_dataloaders: True
+log_root: "./log/"
+worker: 0                       # (int) The number of workers processing the data.
+save_dataset: True             # (bool) Whether or not to save the filtered dataset.
+dataset_save_path: ~            # (str) Path to save the filtered dataset.
+dataloaders_save_path: ~        # (str) Path to save the dataloaders.
+log_wandb: False                # (bool) Whether to use Weights & Biases (W&B) for logging.
+wandb_project: 'recbole'        # (str) Project name for experiments in W&B.
+shuffle: True                   # (bool) Whether to shuffle the training data before each epoch.
+
+#* dataset
+data_path: "./dataset/"
+# Specify from which file and columns to read. Here, 'ml-1m.inter' specifies to read user_id, item_id, rating, and timestamp columns.
+field_separator: "\t"           # Specifies the field separator in the dataset.
+seq_separator: " "              # Specifies the separator for token_seq or float_seq fields in the dataset.
+USER_ID_FIELD: user_id          # Specifies the user ID field.
+ITEM_ID_FIELD: item_id          # Specifies the item ID field.
+RATING_FIELD: rating            # Specifies the rating field.
+TIME_FIELD: timestamp           # Specifies the timestamp field.
+USER_ACTIVITY_FIELD: user_activity # Specifies the user activity field.
+use_source_data: False          # True to use raw data like ml-100k; False to use data in the dataset directory.
+load_col:
+    inter: ['user_id', 'item_id', 'rating', 'timestamp']
+
+#neg_sampling:                   # Negative sampling
+#  uniform: 1
+NEG_PREFIX: neg_                # Specifies the prefix for negative sampling.
+LABEL_FIELD: label              # Specifies the label field.
+ITEM_LIST_LENGTH_FIELD: item_length # Specifies the sequence length field.
+LIST_SUFFIX: _list              # Specifies the sequence prefix.
+MAX_ITEM_LIST_LENGTH: 50        # Specifies the maximum sequence length.
+POSITION_FIELD: position_id     # Specifies the generated position ID for sequences.
+
+#max_user_inter_num: 100
+min_user_inter_num: 5
+#max_item_inter_num: 100
+#min_item_inter_num: 5
+#lowest_val:
+#    timestamp: 1546264800
+#highest_val:
+#    timestamp: 1577714400
+
+#* training settings
+epochs: 100                     # Maximum number of training epochs.
+train_batch_size: 1024          # Training batch size.
+learner: adam                   # Optimizer to use (from PyTorch).
+learning_rate: 0.001            # Learning rate.
+training_neg_sample_num: 0      # Number of negative samples.
+eval_step: 1                    # Number of evaluation steps per training epoch.
+stopping_step: 10               # Controls early stopping. Stops training if there is no improvement in the chosen metric within this step count.
+log_interval: 10                # Number of iterations between logs.
+fast_sample_eval: 1
+clip_grad_norm: ~               # (dict) Arguments for clip_grad_norm_, which clips model gradient norms.
+require_pow: False              # (bool) Whether to perform power operation in EmbLoss.
+enable_amp: False               # (bool) Whether to use mixed precision training.
+enable_scaler: False            # (bool) Whether to use GradScaler in mixed precision training.
+transform: ~                    # (str) Transformation operation for batch data processing.
+
+#* evaluation settings
+eval_setting: TO_LS,full        # Sort data by time, set to leave-one-out splitting, and use full ranking.
+metrics: ["Recall","NDCG","GAUC"] # Evaluation metrics ["Recall","NDCG","GAUC","Hit","MRR","Precision"]
+topk: [1, 5, 10, 15, 20, 50]
+valid_metric: Recall@10         # The evaluation metric used for early stopping.
+eval_batch_size: 1024           # Batch size for evaluation.
+weight_decay: 0
+eval_args:                      # Consistent evaluation parameters for fairness across models.
+  split: {'RS':[0.8,0.1,0.1]}   # {'LS':[0.8,0.1,0.1]} - LS: leave-one-out splitting, leave the last item for testing, second-last for validation.
+  group_by: user                 # Apply leave-one-out for each user.
+  order: RO                      # RS:TO - time order, GNN:RO - random order.
+  mode: full
+repeatable: True
+loss_decimal_place: 4
+metric_decimal_place: 4
+valid_metric_bigger: True       # (bool) True if a larger valid metric value is better.
