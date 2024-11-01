@@ -1,3 +1,5 @@
+# LGERec: Integrating Language and Graph Embeddings for Personalized Recommendations
+
 # Prepare data
 dataset/readme.txt to download the dataset
 
